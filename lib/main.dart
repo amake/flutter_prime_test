@@ -27,7 +27,12 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Prime Test'),
       ),
-      body: Center(child: DartPrimes2()),
+      body: Center(
+        child: Execute(
+          entryPoint: _bgGenPrimes,
+          builder: (stream) => StreamListView(stream: stream),
+        ),
+      ),
     );
   }
 }
@@ -47,14 +52,53 @@ class DartPrimes extends StatelessWidget {
   }
 }
 
-class DartPrimes2 extends StatefulWidget {
+class Execute extends StatefulWidget {
+  const Execute({@required this.entryPoint, @required this.builder});
+
+  final Function entryPoint;
+  final Widget Function(Stream) builder;
+
   @override
-  _DartPrimes2State createState() => _DartPrimes2State();
+  _ExecuteState createState() => _ExecuteState();
 }
 
-class _DartPrimes2State extends State<DartPrimes2> {
-  List _items;
+class _ExecuteState extends State<Execute> {
+  ReceivePort _receivePort;
   Isolate _isolate;
+
+  @override
+  void initState() {
+    _receivePort = ReceivePort();
+    Isolate.spawn(widget.entryPoint, _receivePort.sendPort)
+        .then((i) => _isolate = i);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _isolate?.kill(priority: Isolate.immediate);
+    _receivePort.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(_receivePort);
+  }
+}
+
+class StreamListView extends StatefulWidget {
+  const StreamListView({@required this.stream, this.follow = true});
+
+  final Stream stream;
+  final bool follow;
+
+  @override
+  _StreamListViewState createState() => _StreamListViewState();
+}
+
+class _StreamListViewState extends State<StreamListView> {
+  List _items;
   StreamSubscription _subscription;
   ScrollController _scroll;
 
@@ -62,12 +106,10 @@ class _DartPrimes2State extends State<DartPrimes2> {
   void initState() {
     _items = [];
     _scroll = ScrollController();
-    final receivePort = ReceivePort();
-    Isolate.spawn(_bgGenPrimes, receivePort.sendPort).then((i) => _isolate = i);
-    _subscription = receivePort.transform(EveryNth(250)).listen((prime) {
+    _subscription = widget.stream.transform(EveryNth(250)).listen((prime) {
       setState(() {
         _items.add(prime);
-        if (_items.length > 10) {
+        if (widget.follow && _items.length > 10) {
           _scroll.jumpTo(_scroll.position.maxScrollExtent);
         }
       });
@@ -79,7 +121,6 @@ class _DartPrimes2State extends State<DartPrimes2> {
   void dispose() {
     _subscription.cancel();
     _scroll.dispose();
-    _isolate?.kill(priority: Isolate.immediate);
     super.dispose();
   }
 
