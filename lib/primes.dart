@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'dart:isolate';
+
+import 'package:flutter/services.dart';
 
 Stream<int> primes = Stream<int>.fromIterable(_genPrimes());
 
@@ -26,4 +29,29 @@ bool _isPrime(int n) {
     }
   }
   return true;
+}
+
+const _platform = MethodChannel('example.com/primes');
+
+StreamController platformPrimes() {
+  StreamController controller;
+  _platform.setMethodCallHandler((call) async {
+    switch (call.method) {
+      case 'addPrime':
+        controller.add(call.arguments);
+        return true;
+      default:
+        throw PlatformException(code: 'Unsupported method');
+    }
+  });
+  controller = StreamController(
+    onListen: () => _platform.invokeMethod('start'),
+    onCancel: () {
+      _platform.invokeMethod('cancel');
+      controller.close();
+    },
+    onPause: () => _platform.invokeMethod('pause'),
+    onResume: () => _platform.invokeMethod('resume'),
+  );
+  return controller;
 }

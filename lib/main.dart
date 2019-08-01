@@ -25,18 +25,34 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Prime Test'),
-      ),
-      body: Center(
-        child: Execute(
-          entryPoint: generatePrimes,
-          builder: (stream) => StreamListView(
-              stream: stream
-                  .transform(const EveryNth(250))
-                  .transform(const Timestamp())
-                  .transform(const EventTimer())),
+    final tabs = [
+      Tab(text: 'Dart'),
+      Tab(text: 'Platform'),
+    ];
+    return DefaultTabController(
+      length: tabs.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Prime Test'),
+          bottom: TabBar(tabs: tabs),
+        ),
+        body: TabBarView(
+          children: [
+            Execute(
+              entryPoint: generatePrimes,
+              builder: (stream) => StreamListView(
+                  stream: () => stream
+                      .transform(const EveryNth(250))
+                      .transform(const Timestamp())
+                      .transform(const EventTimer())),
+            ),
+            StreamListView(
+                stream: () => platformPrimes()
+                    .stream
+                    .transform(const EveryNth(250))
+                    .transform(const Timestamp())
+                    .transform(const EventTimer()))
+          ],
         ),
       ),
     );
@@ -81,7 +97,7 @@ class _ExecuteState extends State<Execute> {
 class StreamListView extends StatefulWidget {
   const StreamListView({@required this.stream, this.follow = true});
 
-  final Stream stream;
+  final Stream Function() stream;
   final bool follow;
 
   @override
@@ -97,7 +113,7 @@ class _StreamListViewState extends State<StreamListView> {
   void initState() {
     _items = [];
     _scroll = ScrollController();
-    _subscription = widget.stream.listen((prime) {
+    _subscription = widget.stream().listen((prime) {
       setState(() {
         _items.add(prime);
         if (widget.follow && _items.length > 10) {
