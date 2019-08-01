@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:isolate';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_prime_test/primes.dart';
 import 'package:flutter_prime_test/stream_utils.dart';
 
 void main() => runApp(MyApp());
@@ -30,25 +31,10 @@ class MyHomePage extends StatelessWidget {
       ),
       body: Center(
         child: Execute(
-          entryPoint: _bgGenPrimes,
           builder: (stream) => StreamListView(stream: stream),
+          entryPoint: generatePrimes,
         ),
       ),
-    );
-  }
-}
-
-class DartPrimes extends StatelessWidget {
-  final Iterator<int> _iterator = _genPrimes().iterator;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (context, i) {
-        final next = _iterator.moveNext();
-        assert(next);
-        return Text(_iterator.current.toString());
-      },
     );
   }
 }
@@ -139,32 +125,4 @@ class _StreamListViewState extends State<StreamListView> {
       },
     );
   }
-}
-
-Stream<int> _primes = Stream<int>.fromIterable(_genPrimes());
-
-void _bgGenPrimes(SendPort sendPort) {
-  for (final prime in _genPrimes()) {
-    sendPort.send(prime);
-  }
-}
-
-Iterable<int> _genPrimes() sync* {
-  for (int i = 2;; i++) {
-    if (_isPrime(i)) {
-      yield i;
-    }
-  }
-}
-
-bool _isPrime(int n) {
-  if (n == 2) {
-    return true;
-  }
-  for (int i = n - 1; i > 1; i--) {
-    if (n % i == 0) {
-      return false;
-    }
-  }
-  return true;
 }
