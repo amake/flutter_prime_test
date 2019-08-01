@@ -3,11 +3,17 @@ import 'dart:isolate';
 
 import 'package:flutter/services.dart';
 
+const kReportingInterval = 250;
+
 Stream<int> primes = Stream<int>.fromIterable(_genPrimes());
 
 void generatePrimes(SendPort sendPort) {
+  var count = 0;
   for (final prime in _genPrimes()) {
-    sendPort.send(prime);
+    count++;
+    if (count % kReportingInterval == 0) {
+      sendPort.send(prime);
+    }
   }
 }
 

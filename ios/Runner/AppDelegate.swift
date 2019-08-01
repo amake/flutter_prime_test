@@ -40,6 +40,8 @@ import Flutter
   }
 }
 
+let reportingInterval = 250
+
 class PrimeGenerator {
     init(consumer: @escaping (Int) -> Void) {
         self.consumer = consumer
@@ -48,6 +50,7 @@ class PrimeGenerator {
     private let consumer: (Int) -> Void
     private var stopped = false
     private var primes = Primes()
+    private var count = 0
 
     func start() {
         stopped = false
@@ -56,7 +59,10 @@ class PrimeGenerator {
                 if (self.stopped) {
                     break
                 }
-                self.consumer(prime)
+                self.count += 1
+                if (self.count % reportingInterval == 0) {
+                    self.consumer(prime)
+                }
             }
         }
     }
@@ -68,6 +74,7 @@ class PrimeGenerator {
     func reset() {
         stop()
         primes = Primes()
+        count = 0
     }
 }
 

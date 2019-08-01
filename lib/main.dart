@@ -42,14 +42,14 @@ class MyHomePage extends StatelessWidget {
               entryPoint: generatePrimes,
               builder: (stream) => StreamListView(
                   stream: () => stream
-                      .transform(const EveryNth(250))
+                      //.transform(const EveryNth(kReportingInterval))
                       .transform(const Timestamp())
                       .transform(const EventTimer())),
             ),
             StreamListView(
                 stream: () => platformPrimes()
                     .stream
-                    .transform(const EveryNth(250))
+                    //.transform(const EveryNth(kReportingInterval))
                     .transform(const Timestamp())
                     .transform(const EventTimer()))
           ],
