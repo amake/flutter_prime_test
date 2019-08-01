@@ -31,8 +31,12 @@ class MyHomePage extends StatelessWidget {
       ),
       body: Center(
         child: Execute(
-          builder: (stream) => StreamListView(stream: stream),
           entryPoint: generatePrimes,
+          builder: (stream) => StreamListView(
+              stream: stream
+                  .transform(const EveryNth(250))
+                  .transform(const Timestamp())
+                  .transform(const Timer())),
         ),
       ),
     );
@@ -93,11 +97,7 @@ class _StreamListViewState extends State<StreamListView> {
   void initState() {
     _items = [];
     _scroll = ScrollController();
-    _subscription = widget.stream
-        .transform(const EveryNth(250))
-        .transform(const Timestamp())
-        .transform(const Timer())
-        .listen((prime) {
+    _subscription = widget.stream.listen((prime) {
       setState(() {
         _items.add(prime);
         if (widget.follow && _items.length > 10) {
