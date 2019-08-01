@@ -85,9 +85,9 @@ class TimedValue<T> {
   String toString() => '$value (+$elapsed)';
 }
 
-class Timer<S>
+class EventTimer<S>
     extends StreamTransformerBase<TimestampedValue<S>, TimedValue<S>> {
-  const Timer();
+  const EventTimer();
 
   @override
   Stream<TimedValue<S>> bind(Stream<TimestampedValue<S>> stream) =>

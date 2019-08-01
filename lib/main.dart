@@ -36,7 +36,7 @@ class MyHomePage extends StatelessWidget {
               stream: stream
                   .transform(const EveryNth(250))
                   .transform(const Timestamp())
-                  .transform(const Timer())),
+                  .transform(const EventTimer())),
         ),
       ),
     );
