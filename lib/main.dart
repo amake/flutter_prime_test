@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:isolate';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_prime_test/primes.dart';
@@ -37,33 +38,36 @@ class MyHomePage extends StatelessWidget {
           title: Text('Prime Test'),
           bottom: TabBar(tabs: tabs),
         ),
-        body: TabBarView(
-          children: [
-            Execute(
-              entryPoint: generatePrimes,
-              builder: (stream) => StreamListView(
-                  stream: stream
-                      //.transform(const EveryNth(kReportingInterval))
-                      .transform(const Timestamp())
-                      .transform(const EventTimer())),
-            ),
-            Streaming(
-              controller: platformPrimes,
-              builder: (stream) => StreamListView(
-                  stream: stream
-                      //.transform(const EveryNth(kReportingInterval))
-                      .transform(const Timestamp())
-                      .transform(const EventTimer())),
-            ),
-            Streaming(
-              controller: nativePrimes,
-              builder: (stream) => StreamListView(
-                  stream: stream
-                      //.transform(const EveryNth(kReportingInterval))
-                      .transform(const Timestamp())
-                      .transform(const EventTimer())),
-            )
-          ],
+        body: DefaultTextStyle.merge(
+          style: const TextStyle(fontFeatures: [FontFeature.tabularFigures()]),
+          child: TabBarView(
+            children: [
+              Execute(
+                entryPoint: generatePrimes,
+                builder: (stream) => StreamListView(
+                    stream: stream
+                        //.transform(const EveryNth(kReportingInterval))
+                        .transform(const Timestamp())
+                        .transform(const EventTimer())),
+              ),
+              Streaming(
+                controller: platformPrimes,
+                builder: (stream) => StreamListView(
+                    stream: stream
+                        //.transform(const EveryNth(kReportingInterval))
+                        .transform(const Timestamp())
+                        .transform(const EventTimer())),
+              ),
+              Streaming(
+                controller: nativePrimes,
+                builder: (stream) => StreamListView(
+                    stream: stream
+                        //.transform(const EveryNth(kReportingInterval))
+                        .transform(const Timestamp())
+                        .transform(const EventTimer())),
+              )
+            ],
+          ),
         ),
       ),
     );
