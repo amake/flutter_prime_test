@@ -6,6 +6,7 @@ class EveryNth<S> extends StreamTransformerBase<S, S> {
   const EveryNth(this.n);
 
   final int n;
+
   @override
   Stream<S> bind(Stream<S> stream) =>
       Stream.eventTransformed(stream, (sink) => EveryNthSink<S>(n, sink));
@@ -59,6 +60,7 @@ class TimestampSink<S> extends EventSink<S> {
   TimestampSink(this.outSink);
 
   final EventSink<TimestampedValue<S>> outSink;
+
   @override
   void add(S event) {
     outSink.add(TimestampedValue(event, DateTime.now()));
@@ -82,7 +84,17 @@ class TimedValue<T> {
   final Duration elapsed;
 
   @override
-  String toString() => '$value (+$elapsed)';
+  String toString() => '$value (+${formatDuration(elapsed)})';
+}
+
+String formatDuration(Duration duration) {
+  if (duration.inDays > 0) return '${duration.inDays}d';
+  if (duration.inHours > 0) return '${duration.inHours}h';
+  if (duration.inMinutes > 0) return '${duration.inMinutes}min';
+  if (duration.inSeconds > 0) return '${duration.inSeconds}s';
+  if (duration.inMilliseconds > 0) return '${duration.inMilliseconds}ms';
+  if (duration.inMicroseconds > 0) return '${duration.inMicroseconds}μs';
+  return duration.toString();
 }
 
 class EventTimer<S>
