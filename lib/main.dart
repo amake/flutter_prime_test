@@ -16,17 +16,17 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-  MyHomePage({Key key}) : super(key: key);
+  const MyHomePage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final tabs = [
+    final tabs = const [
       Tab(text: 'Dart'),
       Tab(text: 'Platform'),
       Tab(text: 'Native'),
@@ -35,7 +35,7 @@ class MyHomePage extends StatelessWidget {
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Prime Test'),
+          title: const Text('Prime Test'),
           bottom: TabBar(tabs: tabs),
         ),
         body: DefaultTextStyle.merge(
