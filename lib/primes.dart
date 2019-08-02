@@ -37,7 +37,7 @@ bool _isPrime(int n) {
   return true;
 }
 
-const _platform = MethodChannel('example.com/primes');
+const _platform = MethodChannel('example.com/platform');
 
 StreamController platformPrimes() {
   StreamController controller;
@@ -58,6 +58,31 @@ StreamController platformPrimes() {
     },
     onPause: () => _platform.invokeMethod('pause'),
     onResume: () => _platform.invokeMethod('resume'),
+  );
+  return controller;
+}
+
+const _native = MethodChannel('example.com/native');
+
+StreamController nativePrimes() {
+  StreamController controller;
+  _native.setMethodCallHandler((call) async {
+    switch (call.method) {
+      case 'addPrime':
+        controller.add(call.arguments);
+        return true;
+      default:
+        throw PlatformException(code: 'Unsupported method');
+    }
+  });
+  controller = StreamController(
+    onListen: () => _native.invokeMethod('start'),
+    onCancel: () {
+      _native.invokeMethod('cancel');
+      controller.close();
+    },
+    //onPause: () => _platform.invokeMethod('pause'),
+    //onResume: () => _platform.invokeMethod('resume'),
   );
   return controller;
 }

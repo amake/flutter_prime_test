@@ -19,6 +19,8 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		C47BA08022F33DC400C31ABA /* Primes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47BA07F22F33DC400C31ABA /* Primes.swift */; };
+		C47BA08222F46A5B00C31ABA /* Primes.h in Sources */ = {isa = PBXBuildFile; fileRef = C47BA08122F46A3800C31ABA /* Primes.h */; };
+		C47BA08522F477E300C31ABA /* Primes.c in Sources */ = {isa = PBXBuildFile; fileRef = C47BA08322F474E700C31ABA /* Primes.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -53,6 +55,8 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C47BA07F22F33DC400C31ABA /* Primes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Primes.swift; sourceTree = "<group>"; };
+		C47BA08122F46A3800C31ABA /* Primes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Primes.h; sourceTree = "<group>"; };
+		C47BA08322F474E700C31ABA /* Primes.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = Primes.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +114,8 @@
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				C47BA07F22F33DC400C31ABA /* Primes.swift */,
+				C47BA08122F46A3800C31ABA /* Primes.h */,
+				C47BA08322F474E700C31ABA /* Primes.c */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 			);
 			path = Runner;
@@ -232,7 +238,9 @@
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				C47BA08022F33DC400C31ABA /* Primes.swift in Sources */,
+				C47BA08522F477E300C31ABA /* Primes.c in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				C47BA08222F46A5B00C31ABA /* Primes.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

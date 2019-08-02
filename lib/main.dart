@@ -28,6 +28,7 @@ class MyHomePage extends StatelessWidget {
     final tabs = [
       Tab(text: 'Dart'),
       Tab(text: 'Platform'),
+      Tab(text: 'Native'),
     ];
     return DefaultTabController(
       length: tabs.length,
@@ -48,6 +49,14 @@ class MyHomePage extends StatelessWidget {
             ),
             Streaming(
               controller: platformPrimes,
+              builder: (stream) => StreamListView(
+                  stream: stream
+                      //.transform(const EveryNth(kReportingInterval))
+                      .transform(const Timestamp())
+                      .transform(const EventTimer())),
+            ),
+            Streaming(
+              controller: nativePrimes,
               builder: (stream) => StreamListView(
                   stream: stream
                       //.transform(const EveryNth(kReportingInterval))
