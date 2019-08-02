@@ -41,21 +41,54 @@ class MyHomePage extends StatelessWidget {
             Execute(
               entryPoint: generatePrimes,
               builder: (stream) => StreamListView(
-                  stream: () => stream
+                  stream: stream
                       //.transform(const EveryNth(kReportingInterval))
                       .transform(const Timestamp())
                       .transform(const EventTimer())),
             ),
-            StreamListView(
-                stream: () => platformPrimes()
-                    .stream
-                    //.transform(const EveryNth(kReportingInterval))
-                    .transform(const Timestamp())
-                    .transform(const EventTimer()))
+            Streaming(
+              controller: platformPrimes,
+              builder: (stream) => StreamListView(
+                  stream: stream
+                      //.transform(const EveryNth(kReportingInterval))
+                      .transform(const Timestamp())
+                      .transform(const EventTimer())),
+            )
           ],
         ),
       ),
     );
+  }
+}
+
+class Streaming<T> extends StatefulWidget {
+  const Streaming({@required this.builder, @required this.controller});
+
+  final StreamController<T> Function() controller;
+  final Widget Function(Stream<T>) builder;
+
+  @override
+  _StreamingState createState() => _StreamingState();
+}
+
+class _StreamingState<T> extends State<Streaming<T>> {
+  StreamController<T> _controller;
+
+  @override
+  void initState() {
+    _controller = widget.controller();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(_controller.stream);
   }
 }
 
@@ -97,7 +130,7 @@ class _ExecuteState extends State<Execute> {
 class StreamListView extends StatefulWidget {
   const StreamListView({@required this.stream, this.follow = true});
 
-  final Stream Function() stream;
+  final Stream stream;
   final bool follow;
 
   @override
@@ -113,7 +146,7 @@ class _StreamListViewState extends State<StreamListView> {
   void initState() {
     _items = [];
     _scroll = ScrollController();
-    _subscription = widget.stream().listen((prime) {
+    _subscription = widget.stream.listen((prime) {
       setState(() {
         _items.add(prime);
         if (widget.follow && _items.length > 10) {
