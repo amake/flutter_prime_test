@@ -1,16 +1,20 @@
 # flutter_prime_test
 
-A new Flutter project.
+A test comparing Flutter performance across three layers:
 
-## Getting Started
+1. Dart (common)
+2. "Platform": Swift (iOS) and Kotlin (Android)
+3. "Native": C (iOS) and C++ (Android)
 
-This project is a starting point for a Flutter application.
+(I assume that Objective-C is similar to C, and Java is similar to Kotlin in
+performance, so they are not used.)
 
-A few resources to get you started if this is your first Flutter project:
+This app implements a naive search for prime numbers, reporting in the UI one
+prime number for every 250 found, along with the elapsed time since the previous
+one.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Observations
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- In a debug build, Swift is astoundingly slow
+- In a debug build, C++ starts fast but slows down surprisingly quickly
+- In a release build, everything is pretty much equally fast
