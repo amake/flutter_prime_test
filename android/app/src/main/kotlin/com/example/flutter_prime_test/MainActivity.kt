@@ -56,22 +56,20 @@ class MainActivity: FlutterActivity(), CoroutineScope {
   private fun setupNative() {
     val channel = MethodChannel(flutterView, "example.com/native")
 
-    val primegen = NativePrimes()
+    val primegen = NativePrimes { prime ->
+      launch(Dispatchers.Main) {
+        channel.invokeMethod("addPrime", prime)
+      }
+    }
 
     channel.setMethodCallHandler { call, result ->
       when(call.method) {
         "start" -> {
+          launch { primegen.start() }
           result.success(true)
-          channel.invokeMethod("addPrime", primegen.stringFromJNI()) // test
-          channel.invokeMethod("addPrime", primegen.stringFromJNI()) // test
         }
         "cancel" -> {
-          result.success(true)
-        }
-        "pause" -> {
-          result.success(true)
-        }
-        "resume" -> {
+          primegen.stop()
           result.success(true)
         }
         else -> result.error("Method unsupported: ${call.method}", null, null)

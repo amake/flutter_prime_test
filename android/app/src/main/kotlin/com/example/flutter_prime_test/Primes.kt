@@ -1,5 +1,6 @@
 package com.example.flutter_prime_test
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -49,13 +50,28 @@ class PrimeGenerator(val consumer: (Int) -> Unit) {
     }
 }
 
-class NativePrimes {
+class NativePrimes(val consumer: (Int) -> Unit) {
 
-    external fun stringFromJNI(): String
+    private external fun setEnabled(enabled: Boolean)
+
+    private external fun genPrimes()
+
+    private fun consume(prime: Int) {
+        consumer(prime)
+    }
 
     companion object {
         init {
-            System.loadLibrary("native-lib")
+            System.loadLibrary("primes")
         }
+    }
+
+    suspend fun start() = withContext(Dispatchers.Default) {
+        setEnabled(true)
+        genPrimes()
+    }
+
+    fun stop() {
+        setEnabled(false)
     }
 }
