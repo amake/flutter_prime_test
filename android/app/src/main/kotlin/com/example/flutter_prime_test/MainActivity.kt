@@ -15,6 +15,13 @@ class MainActivity: FlutterActivity(), CoroutineScope {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    setupPlatform()
+    setupNative()
+
+    GeneratedPluginRegistrant.registerWith(this)
+  }
+
+  private fun setupPlatform() {
     val channel = MethodChannel(flutterView, "example.com/platform")
 
     val primegen = PrimeGenerator { prime ->
@@ -44,8 +51,32 @@ class MainActivity: FlutterActivity(), CoroutineScope {
         else -> result.error("Method unsupported: ${call.method}", null, null)
       }
     }
+  }
 
-    GeneratedPluginRegistrant.registerWith(this)
+  private fun setupNative() {
+    val channel = MethodChannel(flutterView, "example.com/native")
+
+    val primegen = NativePrimes()
+
+    channel.setMethodCallHandler { call, result ->
+      when(call.method) {
+        "start" -> {
+          result.success(true)
+          channel.invokeMethod("addPrime", primegen.stringFromJNI()) // test
+          channel.invokeMethod("addPrime", primegen.stringFromJNI()) // test
+        }
+        "cancel" -> {
+          result.success(true)
+        }
+        "pause" -> {
+          result.success(true)
+        }
+        "resume" -> {
+          result.success(true)
+        }
+        else -> result.error("Method unsupported: ${call.method}", null, null)
+      }
+    }
   }
 
   override fun onDestroy() {

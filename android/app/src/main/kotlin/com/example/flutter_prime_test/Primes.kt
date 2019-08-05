@@ -48,3 +48,14 @@ class PrimeGenerator(val consumer: (Int) -> Unit) {
         count = 0
     }
 }
+
+class NativePrimes {
+
+    external fun stringFromJNI(): String
+
+    companion object {
+        init {
+            System.loadLibrary("native-lib")
+        }
+    }
+}
