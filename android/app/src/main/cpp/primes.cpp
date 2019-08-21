@@ -1,5 +1,6 @@
 #include <jni.h>
 #include <string>
+#include <atomic>
 
 const int reportingInterval = 250;
 
@@ -15,13 +16,13 @@ bool is_prime(int n) {
     return true;
 }
 
-bool gen_primes_stop = false;
+std::atomic_bool gen_primes_stop;
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_flutter_1prime_1test_NativePrimes_setEnabled(JNIEnv* env,
                                                               jobject thisObject,
                                                               jboolean enabled) {
-    gen_primes_stop = !enabled;
+    gen_primes_stop.store(!enabled);
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -30,7 +31,7 @@ Java_com_example_flutter_1prime_1test_NativePrimes_genPrimes(JNIEnv* env,
     jclass clazz = env->GetObjectClass(thisObject);
     jmethodID consume = env->GetMethodID(clazz, "consume", "(I)V");
 
-    for (int i = 2, count = 0; !gen_primes_stop; i++) {
+    for (int i = 2, count = 0; !gen_primes_stop.load(); i++) {
         if (is_prime(i)) {
             count++;
             if (count % reportingInterval == 0) {
