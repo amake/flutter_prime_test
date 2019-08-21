@@ -53,12 +53,12 @@ import Flutter
             switch call.method {
             case "start":
                 DispatchQueue.global(qos: .userInitiated).async {
-                    c_gen_primes_stop = false
+                    c_gen_primes_set_enabled(true)
                     c_gen_primes()
                 }
                 result(true)
             case "cancel":
-                c_gen_primes_stop = true
+                c_gen_primes_set_enabled(false)
                 result(true)
             default:
                 result(FlutterError())

@@ -13,7 +13,7 @@
 
 bool c_is_prime(int n);
 
-bool c_gen_primes_stop;
+void c_gen_primes_set_enabled(bool);
 
 void (*c_consume_prime)(int);
 

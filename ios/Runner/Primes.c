@@ -7,8 +7,15 @@
 //
 
 #include "Primes.h"
+#include <stdatomic.h>
+
+atomic_bool c_gen_primes_stop = false;
 
 int reportingInterval = 250;
+
+void c_gen_primes_set_enabled(bool enabled) {
+    atomic_store(&c_gen_primes_stop, !enabled);
+}
 
 bool c_is_prime(int n) {
     if (n == 2) {
@@ -23,7 +30,7 @@ bool c_is_prime(int n) {
 }
 
 void c_gen_primes() {
-    for (int i = 2, count = 0; !c_gen_primes_stop; i++) {
+    for (int i = 2, count = 0; !atomic_load(&c_gen_primes_stop); i++) {
         if (c_is_prime(i)) {
             count++;
             if (count % reportingInterval == 0) {
