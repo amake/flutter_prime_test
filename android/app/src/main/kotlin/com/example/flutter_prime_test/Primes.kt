@@ -1,19 +1,18 @@
 package com.example.flutter_prime_test
 
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 fun isPrime(n: Int): Boolean {
     if (n == 2) {
-        return true;
+        return true
     }
     for (i in (n - 1) downTo 2) {
         if (n % i == 0) {
-            return false;
+            return false
         }
     }
-    return true;
+    return true
 }
 
 fun primes() = generateSequence(2) { it + 1 }.filter { isPrime(it) }
